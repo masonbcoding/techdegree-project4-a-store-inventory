@@ -162,7 +162,7 @@ def initialize():
     
 menu = OrderedDict([
         ('v', view_products),
-        ('a', add_products),
+        ('a', add_product),
         ('b', create_backup)
 ])
 
