@@ -80,11 +80,11 @@ def view_products():
     """View products in inventory"""
     min_id = (Product.select().order_by(Product.product_id.asc()).get()).product_id
     max_id = (Product.select().order_by(Product.product_id.desc()).get()).product_id
-    print(f"\n Assign a product id between {min_id} & {max_id}")
-    id = int(input("Assign product id: "))
+    print(f"\nPlease choose product id between {min_id} & {max_id}")
+    id = int(input("Choose product id: "))
     while id not in range(min_id, max_id+1):
-        print("The upper and lower limits for product identifications are {} and {}. Please assign a valid product id. ".format(min_id, max_id))
-        id = int(input("Assign product id: "))
+        print("Your selection must be between {} and {}".format(min_id, max_id))
+        id = int(input("Select product id: "))
     print(f"""\n-Product: {Product.get_by_id(id).product_name}
 -Quantity: {Product.get_by_id(id).product_quantity}
 -Price: {Product.get_by_id(id).product_price} cents
@@ -95,23 +95,23 @@ def view_products():
 # add a new product to the database with menu option A
 
 def add_product():
-    """Add products to inventory"""
-    name = input("\nEnter new product name: ")
+    """Add a new product to the inventory"""
+    name = input("\nEnter the name of the new product: ")
 
-    quantity = input("Enter new product quantity: ")
+    quantity = input("Enter the quantity of the new product: ")
     while quantity.isdigit() == False:
-        print("That isn't a valid entry. Please enter a valid product quantity.")
-        quantity = input("Enter new product quantity: ")
+        print("Please enter a valid number.")
+        quantity = input("Enter the quantity of the new product: ")
     quantity = int(quantity)
 
-    price = input("Enter new product price: ").strip("$")
+    price = input("Enter the price of the new product(in dollars): ").strip("$")
     while True:
         try:
             price = float(price)
             break
         except ValueError:
-            print("That entry is invalid. Please enter a valid price")
-            price = input("Enter new product price: ")
+            print("Please enter a valid price")
+            price = input("Enter the price of the new product: ")
 
     price = price * 100
 
@@ -119,17 +119,17 @@ def add_product():
         Product.create(product_name=name,
                        product_price=price,
                        product_quantity=quantity)
-        new_item = Product.select().order_by(Product.product_id.desc()).get()
-        print(f"{new_item.product_name} has been added to the inventory. There are {new_item.product_id} items in the inventory.\n")
+        latest_item = Product.select().order_by(Product.product_id.desc()).get()
+        print(f"{latest_item.product_name.title()} has been added as the {latest_item.product_id}th item in the inventory.\n")
 
     except IntegrityError:
-        prod_update = Product.get(product_name=name)
-        prod_update.product_name = name
-        prod_update.product_price = price
-        prod_update.product_quantity = quantity
-        prod_update.date_updated = datetime.datetime.now()
-        prod_update.save()
-        print(f"{prod_update.product_name} has been updated\n")
+        to_update = Product.get(product_name=name)
+        to_update.product_name = name
+        to_update.product_price = price
+        to_update.product_quantity = quantity
+        to_update.date_updated = datetime.datetime.now()
+        to_update.save()
+        print(f"You just updated {to_update.product_name}\n")
     input("\nPress ENTER to continue")
     clear()
 
