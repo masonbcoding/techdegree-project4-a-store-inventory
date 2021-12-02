@@ -78,19 +78,22 @@ def menu_loop():
 
 def view_products():
     """View products in inventory"""
-    min_id = (Product.select().order_by(Product.product_id.asc()).get()).product_id
-    max_id = (Product.select().order_by(Product.product_id.desc()).get()).product_id
-    print(f"\nPlease choose product id between {min_id} & {max_id}")
-    id = int(input("Choose product id: "))
-    while id not in range(min_id, max_id+1):
-        print("Your selection must be between {} and {}".format(min_id, max_id))
-        id = int(input("Select product id: "))
-    print(f"""\n-Product: {Product.get_by_id(id).product_name}
--Quantity: {Product.get_by_id(id).product_quantity}
--Price: {Product.get_by_id(id).product_price} cents
--Date updated: {Product.get_by_id(id).date_updated}\n""")
-    input("\nPress ENTER to continue")
-    clear()
+    try:
+        min_id = (Product.select().order_by(Product.product_id.asc()).get()).product_id
+        max_id = (Product.select().order_by(Product.product_id.desc()).get()).product_id
+        print(f"\nPlease choose product id between {min_id} & {max_id}")
+        id = int(input("Choose product id: "))
+        while id not in range(min_id, max_id+1):
+            print("Your selection must be between {} and {}".format(min_id, max_id))
+            id = int(input("Select product id: "))
+        print(f"""\n-Product: {Product.get_by_id(id).product_name}
+    -Quantity: {Product.get_by_id(id).product_quantity}
+    -Price: {Product.get_by_id(id).product_price} cents
+    -Date updated: {Product.get_by_id(id).date_updated}\n""")
+        input("\nPress ENTER to continue")
+        clear()
+    except ValueError:
+        print("That selection is invalid. Your selection must be an integer between {} and {}\n".format(min_id, max_id))
     
 # add a new product to the database with menu option A
 
